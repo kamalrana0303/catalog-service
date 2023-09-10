@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: catalog-service
+    config:
+      import: 'optional:configserver:'
+  sql:
+    init:
+      mode: always
+management:
+  endpoint:
+    web:
+      exposure:
+        include: refresh
+server:
+  port: 8070
