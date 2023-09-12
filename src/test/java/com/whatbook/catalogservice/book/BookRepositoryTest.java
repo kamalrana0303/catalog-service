@@ -11,6 +11,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.Optional;
 
@@ -20,11 +27,26 @@ import java.util.Optional;
         replace = AutoConfigureTestDatabase.Replace.NONE  //Disables the default behavior of relying on an embedded test database since we want to use Testcontainers
 )
 @ActiveProfiles("integeration") //Enables the “integration” profile to load configuration from application-integration.yml
+@Testcontainers
 public class BookRepositoryTest {
     @Autowired
     private JdbcAggregateTemplate jdbcAggregateTemplate;  //A lower-level object to interact with the database
     @Autowired
     private BookRepository bookRepository;
+    @Container
+    public static MySQLContainer<?> mySQLContainer =  new MySQLContainer<>(DockerImageName.parse("mysql:8"))
+            .withDatabaseName("projectDb")
+            .withUsername("root")
+            .withPassword("password")
+            .waitingFor(Wait.forListeningPort())
+            .withEnv("MYSQL_ROOT_HOST","%");
+
+    @DynamicPropertySource
+    static void registerPgProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.password", mySQLContainer::getPassword);
+        registry.add("spring.datasource.username", mySQLContainer::getUsername);
+    }
 
     @Test
     void findByIsbnWhenExisting(){

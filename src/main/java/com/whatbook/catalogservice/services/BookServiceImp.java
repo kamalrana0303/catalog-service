@@ -42,6 +42,9 @@ public class BookServiceImp implements BookService {
         return bookRepository.findByIsbn(isbn)
                 .map(existingBook-> {
                     var bookToUpdate = Book.of(existingBook.getIsbn(),book.getTitle(),book.getAuthor(),book.getPrice());
+                    bookToUpdate.setVersion(existingBook.getVersion());
+                    bookToUpdate.setCreatedDate(existingBook.getCreatedDate());
+                    bookToUpdate.setLastModifiedDate(existingBook.getLastModifiedDate());
                     return bookRepository.save(bookToUpdate);
                 })
                 .orElseGet(()->addBookToCatalog(book));

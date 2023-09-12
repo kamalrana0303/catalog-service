@@ -8,6 +8,7 @@ import com.whatbook.catalogservice.services.BookService;
 import net.joshka.junit.json.params.JsonFileSource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,9 +18,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.json.JsonObject;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -65,4 +69,24 @@ public class BookControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
+
+    @Test
+    void whenDeleteBookByIsbn() throws Exception{
+        String isbn = "0123456789";
+        Mockito.doNothing().when(this.bookService).removeBookFromCatalog("isbn");
+        mockMvc.perform(delete("/books/"+isbn)).andExpect(status().isNoContent());
+    }
+
+
+    @ParameterizedTest
+    @JsonFileSource(resources = "/book.json")
+    void whenPutBook(JsonObject json) throws Exception{
+        String isbn = "0123456789";
+        Book book = Book.of(isbn,"title","author",12.9);
+        given(this.bookService.editBookDetails(eq(isbn), any(Book.class)))
+                .willReturn(book);
+        mockMvc.perform(put("/books/"+isbn).content(json.toString())
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    }
+
 }
