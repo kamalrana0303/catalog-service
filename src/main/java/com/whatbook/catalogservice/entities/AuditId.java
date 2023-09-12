@@ -18,7 +18,7 @@ public class AuditId{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @CreatedDate
-    private Instant creationDate;
+    private Instant createdDate;
     @LastModifiedDate
     private Instant lastModifiedDate;
 }
