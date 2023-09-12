@@ -11,5 +11,4 @@ public interface BookRepository extends CrudRepository<Book,Long> {
     boolean existsByIsbn(String isbn);
     Book save(Book book);
     void deleteByIsbn(String isbn);
-
 }

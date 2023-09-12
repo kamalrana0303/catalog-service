@@ -1,4 +1,4 @@
-package com.whatbook.catalogservice.book;
+package com.whatbook.catalogservice.slice.book;
 
 import com.whatbook.catalogservice.entities.Book;
 import org.assertj.core.api.Assertions;

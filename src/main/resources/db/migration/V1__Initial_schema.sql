@@ -1,5 +1,5 @@
 CREATE TABLE books (
-id                  BIGINT PRIMARY KEY NOT NULL,
+id                  BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 author              varchar(255) NOT NULL,
 isbn                varchar(255) UNIQUE NOT NULL,
 price               float8 NOT NULL,
