@@ -1,4 +1,4 @@
-package com.whatbook.catalogservice.config;
+package com.whatbook.catalogservice.config.test;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

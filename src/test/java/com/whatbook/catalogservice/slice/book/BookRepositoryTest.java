@@ -1,8 +1,8 @@
 package com.whatbook.catalogservice.slice.book;
 
 import com.whatbook.catalogservice.BookRepository;
-import com.whatbook.catalogservice.config.test.BookDataLoader;
 import com.whatbook.catalogservice.config.test.TestAuditingConfiguration;
+import com.whatbook.catalogservice.config.test.BookDataLoader;
 import com.whatbook.catalogservice.entities.Book;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
