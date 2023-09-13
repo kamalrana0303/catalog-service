@@ -1,22 +1,18 @@
 package com.whatbook.catalogservice.slice.book;
 
 import com.whatbook.catalogservice.BookRepository;
-import com.whatbook.catalogservice.config.DataConfig;
-import com.whatbook.catalogservice.config.TestAuditingConfiguration;
+import com.whatbook.catalogservice.config.test.BookDataLoader;
+import com.whatbook.catalogservice.config.test.TestAuditingConfiguration;
 import com.whatbook.catalogservice.entities.Book;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
@@ -25,7 +21,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.Optional;
 @DataJpaTest  //Identifies a test class that focuses on Spring Data JDBC components
-@Import(TestAuditingConfiguration.class) //Imports the data configuration (needed to enable auditing)
+@Import({TestAuditingConfiguration.class,BookDataLoader.class}) //Imports the data configuration (needed to enable auditing)
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE  //Disables the default behavior of relying on an embedded test database since we want to use Testcontainers
 )
@@ -52,11 +48,9 @@ public class BookRepositoryTest {
 
     @Test
     void findByIsbnWhenExisting(){
-        var bookIsbn = "1234561237";
-        var book  = Book.of(bookIsbn,"title","author",12.90);
-        bookRepository.save(book);
+        var bookIsbn = "1234567891";
         Optional<Book> actualBook = bookRepository.findByIsbn(bookIsbn);
         Assertions.assertThat(actualBook).isPresent();
-        Assertions.assertThat(actualBook.get().getIsbn()).isEqualTo(book.getIsbn());
+        Assertions.assertThat(actualBook.get().getIsbn()).isEqualTo(bookIsbn);
     }
 }
