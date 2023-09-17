@@ -6,7 +6,7 @@ import org.testcontainers.utility.DockerImageName;
 
 
 public class TestConstants {
-    public static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:8"))
+    public static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:8.0"))
             .withDatabaseName("projectdb")
             .withUsername("root")
             .withPassword("password")
