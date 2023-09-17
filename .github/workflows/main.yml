@@ -42,7 +42,6 @@ jobs:
       - name: Build, unit tests and integeration tests
         run: |
           chmod +x gradlew
-          ./gradlew test --info
           ./gradlew build --stacktrace
       
 
