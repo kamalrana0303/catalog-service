@@ -42,7 +42,7 @@ jobs:
       - name: Build, unit tests and integeration tests
         run: |
           chmod +x gradlew
-          ./gradlew build --stacktrace
+          ./gradlew clean test --debug
       
 
   package:
