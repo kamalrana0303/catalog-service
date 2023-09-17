@@ -4,7 +4,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
   profiles:
-    active: local
+    active: test
   application:
     name: catalog-service
     config:
@@ -18,4 +18,4 @@ management:
       exposure:
         include: refresh
 server:
-  port: 8070
+  port: 9001

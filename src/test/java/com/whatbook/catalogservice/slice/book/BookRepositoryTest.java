@@ -53,4 +53,18 @@ public class BookRepositoryTest {
         Assertions.assertThat(actualBook).isPresent();
         Assertions.assertThat(actualBook.get().getIsbn()).isEqualTo(bookIsbn);
     }
+
+    @Test
+    void existsByIsbnWhenExisting(){
+        var bookIsbn = "1234567891";
+        boolean b = bookRepository.existsByIsbn(bookIsbn);
+        Assertions.assertThat(b).isTrue();
+    }
+    @Test
+    void deleteByIsbnWhenExisting(){
+        var bookIsbn = "1234567891";
+        bookRepository.deleteByIsbn(bookIsbn);
+        Optional<Book> byIsbn = bookRepository.findByIsbn(bookIsbn);
+        Assertions.assertThat(byIsbn).isEmpty();
+    }
 }
