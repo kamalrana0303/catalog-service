@@ -1,6 +1,7 @@
 package com.whatbook.catalogservice.slice.book;
 
 import com.whatbook.catalogservice.BookRepository;
+import com.whatbook.catalogservice.TestConstants;
 import com.whatbook.catalogservice.config.test.TestAuditingConfiguration;
 import com.whatbook.catalogservice.config.test.BookDataLoader;
 import com.whatbook.catalogservice.entities.Book;
@@ -14,33 +15,26 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.Optional;
 @DataJpaTest  //Identifies a test class that focuses on Spring Data JDBC components
-@Import({TestAuditingConfiguration.class,BookDataLoader.class}) //Imports the data configuration (needed to enable auditing)
+@Import({TestAuditingConfiguration.class,BookDataLoader.class, TestConstants.class}) //Imports the data configuration (needed to enable auditing)
+@ActiveProfiles("test")
+@Testcontainers
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE  //Disables the default behavior of relying on an embedded test database since we want to use Testcontainers
 )
-@Testcontainers
-@ActiveProfiles("test")
-public class BookRepositoryTest {
+public class BookRepositoryTest extends TestConstants {
     @Autowired
     private BookRepository bookRepository;
 
     @Container
-    public static MySQLContainer<?> mySQLContainer =  new MySQLContainer<>(DockerImageName.parse("mysql:8"))
-            .withDatabaseName("projectDb")
-            .withUsername("root")
-            .withPassword("password")
-            .waitingFor(Wait.forListeningPort())
-            .withEnv("MYSQL_ROOT_HOST","%");
+    public static MySQLContainer<?> mySQLContainer =  TestConstants.mySQLContainer;
 
     @DynamicPropertySource
-    static void registerMysqlProperties(DynamicPropertyRegistry registry) {
+    public static void registerMysqlProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
         registry.add("spring.datasource.username", mySQLContainer::getUsername);

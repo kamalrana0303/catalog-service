@@ -1,5 +1,6 @@
 package com.whatbook.catalogservice.integeration;
 
+import com.whatbook.catalogservice.TestConstants;
 import com.whatbook.catalogservice.entities.Book;
 import com.zaxxer.hikari.HikariDataSource;
 import org.assertj.core.api.Assertions;
@@ -32,12 +33,7 @@ class BookMvcTest {
     private int port;
 
     @Container
-    public static MySQLContainer<?>mySQLContainer =  new MySQLContainer<>(DockerImageName.parse("mysql:8"))
-            .withDatabaseName("projectDb")
-            .withUsername("root")
-            .withPassword("password")
-            .waitingFor(Wait.forListeningPort())
-            .withEnv("MYSQL_ROOT_HOST","%");
+    public static MySQLContainer<?>mySQLContainer = TestConstants.mySQLContainer;
 
     @DynamicPropertySource
     static void registerPgProperties(DynamicPropertyRegistry registry) {
