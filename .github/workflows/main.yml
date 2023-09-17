@@ -42,7 +42,7 @@ jobs:
         id: wait-mysql
         run: |
           for i in {1..30}; do
-            if docker logs mysql-container 2>&1 | grep "ready for connections" &> /dev/null; then
+            if docker logs db 2>&1 | grep "ready for connections" &> /dev/null; then
               echo "MySQL container is up and running."
               exit 0
             fi
