@@ -42,16 +42,14 @@ jobs:
         id: wait-mysql
         run: |
           for i in {1..30}; do
-            docker ps -a
-            docker logs db
             if docker logs db 2>&1 | grep "ready for connections" &> /dev/null; then
               echo "MySQL container is up and running."
               exit 0
             fi
               sleep 5
-            done
-            echo "MySQL container did not start within the expected time."
-            exit 1
+          done
+          echo "MySQL container did not start within the expected time."
+          exit 1
         continue-on-error: true
 
       - name: Build, unit tests and integeration tests
