@@ -59,5 +59,6 @@ jobs:
 
       - name: Build, unit tests and integeration tests
         run: |
+          docker ps -a
           chmod +x gradlew
           ./gradlew build
