@@ -1,5 +1,9 @@
 name: Commit Stage
 on: push
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: catalog-service/catalog-service
+  VERSION: latest
 jobs:
   build:
     name: Build and Test
@@ -34,35 +38,60 @@ jobs:
         uses: atomicjar/testcontainers-cloud-setup-action@v1
         with:
           token: ${{ secrets.TC_CLOUD_TOKEN }}
-#      - name: Create Docker Network
-#        run: docker network create db-network
-#
-#      - name: Start MySql Container
-#        id: start-mysql
-#        run: |
-#          docker run -d  -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=projectdb -v ${PWD}/db:/var/lib/mysql --net db-network --name db mysql:8
-#        continue-on-error: false
-#      - name: log mysql container
-#        id: logs
-#        run: |
-#          docker ps -a
-#          docker logs db
-
-#      - name: Wait for Mysql Container
-#        id: wait-mysql
-#        run: |
-#          for i in {1..30}; do
-#            if docker logs db 2>&1 | grep "ready for connections" &> /dev/null; then
-#              echo "MySQL container is up and running."
-#              exit 0
-#            fi
-#              sleep 5
-#          done
-#          echo "MySQL container did not start within the expected time."
-#          exit 1
-#        continue-on-error: true
 
       - name: Build, unit tests and integeration tests
         run: |
           chmod +x gradlew
           ./gradlew build
+      
+
+  package:
+    name: Package and Publish
+    if: ${{github.ref == 'refs/heads/main'}}
+    needs: [build]
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      package: write
+      security-events: write
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Build container image
+        run: |
+          chmod +x gradlew
+          ./gradlew bootBuildImage --imageName ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{env.VERSION}}
+
+      - name: OCI image vulnerability scanning
+        uses: anchore/scan-action@v3
+        id: scan
+        with:
+          image:
+            ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{env.VERSION}}
+          fail-build: false
+          serverity-cutoff: high
+          acs-report-enable: true
+
+      - name: Upload vulnerability report
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{steps.scan.outputs.sarif}}
+
+      - name: Log into container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{env.REGISTRY}}
+          username: ${{github.actor}}
+          password: ${{secrets.GT_TOKEN}}
+
+      - name: Publish container image
+        run: docker push ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{env.VERSION}}
