@@ -62,6 +62,6 @@ class BookMvcTest {
         Assertions.assertThat(res).isNotNull();
         logger.error(res.toString());
 //        System.out.println(res);
-//        Assertions.assertThat(res.getIsbn()).isEqualTo(book.getIsbn());
+        Assertions.assertThat(res.getIsbn()).isEqualTo(book.getIsbn(),"Expected: " +book.getIsbn() + ", Actual: "+ res.getIsbn());
     }
 }
