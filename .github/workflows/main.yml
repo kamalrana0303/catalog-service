@@ -42,6 +42,7 @@ jobs:
       - name: Build, unit tests and integeration tests
         run: |
           chmod +x gradlew
+          ./gradlew flywayMigrate --info
           ./gradlew clean build
       
 
