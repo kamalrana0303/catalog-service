@@ -56,6 +56,7 @@ class BookMvcTest {
         var book  = Book.of(bookIsbn,"title","author",12.90);
         Book res  = testRestTemplate.postForObject("http://localhost:"+ port+"/books",book,Book.class);
         Assertions.assertThat(res).isNotNull();
+        System.out.println(res);
         Assertions.assertThat(res.getIsbn()).isEqualTo(book.getIsbn());
     }
 }
