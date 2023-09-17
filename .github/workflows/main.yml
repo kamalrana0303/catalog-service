@@ -29,6 +29,8 @@ jobs:
         if: success() || failure()
         with:
           sarif_file: ${{steps.scan.outputs.sarif}}
+      - name: Create Docker Network
+        run: docker network create db-network
 
       - name: Start MySql Container
         id: start-mysql
