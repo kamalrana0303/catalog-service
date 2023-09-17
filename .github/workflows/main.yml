@@ -42,12 +42,11 @@ jobs:
       - name: Build, unit tests and integeration tests
         run: |
           chmod +x gradlew
-          ./gradlew flywayMigrate --info
           ./gradlew clean build
       
 
   package:
-    name: Package and Publish
+    name: Package and PublishK
     if: ${{github.ref == 'refs/heads/main'}}
     needs: [build]
     runs-on: ubuntu-22.04
