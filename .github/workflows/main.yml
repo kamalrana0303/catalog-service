@@ -29,19 +29,24 @@ jobs:
         if: success() || failure()
         with:
           sarif_file: ${{steps.scan.outputs.sarif}}
-      - name: Create Docker Network
-        run: docker network create db-network
 
-      - name: Start MySql Container
-        id: start-mysql
-        run: |
-          docker run -d  -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=projectdb -v ${PWD}/db:/var/lib/mysql --net db-network --name db mysql:8
-        continue-on-error: false
-      - name: log mysql container
-        id: logs
-        run: |
-          docker ps -a
-          docker logs db
+      - name: Setup Testcontainers Cloud Client
+        uses: atomicjar/testcontainers-cloud-setup-action@v1
+        with:
+          token: ${{ secrets.TC_CLOUD_TOKEN }}
+#      - name: Create Docker Network
+#        run: docker network create db-network
+#
+#      - name: Start MySql Container
+#        id: start-mysql
+#        run: |
+#          docker run -d  -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=projectdb -v ${PWD}/db:/var/lib/mysql --net db-network --name db mysql:8
+#        continue-on-error: false
+#      - name: log mysql container
+#        id: logs
+#        run: |
+#          docker ps -a
+#          docker logs db
 
 #      - name: Wait for Mysql Container
 #        id: wait-mysql
