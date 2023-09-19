@@ -37,7 +37,7 @@ class BookMvcTest {
     public static MySQLContainer<?>mySQLContainer = TestConstants.mySQLContainer;
 
     @DynamicPropertySource
-    static void registerPgProperties(DynamicPropertyRegistry registry) {
+    public static void registerPgProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
         registry.add("spring.datasource.username", mySQLContainer::getUsername);
@@ -53,12 +53,11 @@ class BookMvcTest {
     @Test
     void findByIsbnWhenExisting(){
         var bookIsbn = "1234561237";
+        logger.info(mySQLContainer.getLogs());
         bookIsbn.hashCode();
         var book  = Book.of(bookIsbn,"title","author",12.90);
         Book res  = testRestTemplate.postForObject("http://localhost:"+ port+"/books",book,Book.class);
         Assertions.assertThat(res).isNotNull();
-        logger.error(res.toString());
-//        System.out.println(res);
-        Assertions.assertThat(res.getIsbn()).isEqualTo(book.getIsbn(),"Expected: " +book.getIsbn() + ", Actual: "+ res.getIsbn());
+        Assertions.assertThat(res.getIsbn()).isEqualTo(book.getIsbn());
     }
 }

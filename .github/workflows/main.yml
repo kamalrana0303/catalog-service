@@ -42,8 +42,7 @@ jobs:
       - name: Build, unit tests and integeration tests
         run: |
           chmod +x gradlew
-          ./gradlew clean build
-      
+          ./gradlew clean build --stacktrace
 
   package:
     name: Package and PublishK

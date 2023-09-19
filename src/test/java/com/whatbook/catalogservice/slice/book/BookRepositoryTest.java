@@ -2,12 +2,14 @@ package com.whatbook.catalogservice.slice.book;
 
 import com.whatbook.catalogservice.BookRepository;
 import com.whatbook.catalogservice.TestConstants;
+import com.whatbook.catalogservice.config.DataConfig;
 import com.whatbook.catalogservice.config.test.TestAuditingConfiguration;
 import com.whatbook.catalogservice.config.test.BookDataLoader;
 import com.whatbook.catalogservice.entities.Book;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -20,7 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
 @DataJpaTest  //Identifies a test class that focuses on Spring Data JDBC components
-@Import({TestAuditingConfiguration.class,BookDataLoader.class, TestConstants.class}) //Imports the data configuration (needed to enable auditing)
+@Import({DataConfig.class,BookDataLoader.class, TestConstants.class}) //Imports the data configuration (needed to enable auditing)
 @ActiveProfiles("test")
 @Testcontainers
 @AutoConfigureTestDatabase(
