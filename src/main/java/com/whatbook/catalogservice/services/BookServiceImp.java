@@ -26,7 +26,7 @@ public class BookServiceImp implements BookService {
 
     @Override
     public Book addBookToCatalog(Book book){
-        if(bookRepository.existsByIsbn(book.getIsbn()) == 1){
+        if(bookRepository.existsByIsbn(book.getIsbn())){
             throw new BookAlreadyExistsException(book.getIsbn());
         }
         return bookRepository.save(book);
