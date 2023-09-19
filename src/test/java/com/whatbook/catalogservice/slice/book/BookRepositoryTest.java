@@ -53,8 +53,8 @@ public class BookRepositoryTest extends TestConstants {
     @Test
     void existsByIsbnWhenExisting(){
         var bookIsbn = "1234567891";
-        boolean b = bookRepository.existsByIsbn(bookIsbn);
-        Assertions.assertThat(b).isTrue();
+        int b = bookRepository.existsByIsbn(bookIsbn);
+        Assertions.assertThat(b).isEqualTo(1);
     }
     @Test
     void deleteByIsbnWhenExisting(){
